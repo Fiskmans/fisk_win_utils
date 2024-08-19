@@ -58,7 +58,8 @@ int main()
 			ImGui::DragFloat("Thickness", &thickness);
 			ImGui::ColorEdit4("Color", treeColor.Raw());
 
-			imgui_extensions::Tree(tree, 
+			imgui_extensions::Tree("Tree",
+				tree, 
 				[](TreeLike& aNode)
 				{
 					ImGui::Text(aNode.myName.c_str());

@@ -22,8 +22,10 @@ namespace imgui_extensions
 			*std::begin(childGetter(std::forward<NodeType>(node)))
 		} -> std::convertible_to<NodeType&>;
 	}
-	ImVec2 Tree(NodeType&& aNode, DrawingFunction&& aDrawingFunction, ChildGetter&& aChildGetter, ImColor aColor = ImGui::GetStyle().Colors[ImGuiCol_PlotLines], float aIndentdepth = 15.f, float aRounding = 0, float aThickness = 1)
+	ImVec2 Tree(const char* aStringId, NodeType&& aNode, DrawingFunction&& aDrawingFunction, ChildGetter&& aChildGetter, ImColor aColor = ImGui::GetStyle().Colors[ImGuiCol_PlotLines], float aIndentdepth = 15.f, float aRounding = 0, float aThickness = 1)
 	{
+		ImGui::PushID(aStringId);
+
 		ImVec2 anchor;
 		ImVec2 treeRoot;
 
@@ -50,13 +52,8 @@ namespace imgui_extensions
 		ImGui::Indent(aIndentdepth);
 		std::vector<ImVec2> anchors;
 		for (NodeType& child : aChildGetter(std::forward<NodeType>(aNode)))
-		{
-			ImGui::PushID(static_cast<int>(anchors.size()));
+			anchors.push_back(Tree(std::to_string(anchors.size()).c_str(), child, aDrawingFunction, aChildGetter, aColor, aIndentdepth, aRounding, aThickness));
 
-			anchors.push_back(Tree(child, aDrawingFunction, aChildGetter, aColor, aIndentdepth, aRounding, aThickness));
-
-			ImGui::PopID();
-		}
 		ImGui::Unindent(aIndentdepth);
 
 		ImDrawList* drawlist = ImGui::GetWindowDrawList();
@@ -110,6 +107,8 @@ namespace imgui_extensions
 
 			treeRoot = next;
 		}
+
+		ImGui::PopID();
 
 		return anchor;
 	}

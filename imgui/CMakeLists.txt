@@ -9,6 +9,7 @@ list(APPEND files "${imgui_SOURCE_DIR}/imgui_widgets.cpp")
 list(APPEND files "${imgui_SOURCE_DIR}/imstb_rectpack.h")
 list(APPEND files "${imgui_SOURCE_DIR}/imstb_textedit.h")
 list(APPEND files "${imgui_SOURCE_DIR}/imstb_truetype.h")
+list(APPEND files "imgui_tree.h")
 
 list(APPEND files "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h" "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp")
 
@@ -20,3 +21,4 @@ endif()
 add_library(fisk_imgui ${files})
 
 target_include_directories(fisk_imgui PUBLIC ${imgui_SOURCE_DIR})
+target_include_directories(fisk_imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

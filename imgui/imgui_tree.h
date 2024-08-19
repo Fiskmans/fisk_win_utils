@@ -13,16 +13,16 @@ namespace imgui_extensions
 
 	template<class NodeType, class DrawingFunction, class ChildGetter>
 		requires
-		requires(NodeType& node, DrawingFunction&& drawing, ChildGetter&& childGetter)
+		requires(NodeType&& node, DrawingFunction&& drawing, ChildGetter&& childGetter)
 	{
 		{
-			drawing(node)
+			drawing(std::forward<NodeType>(node))
 		};
 		{
-			*std::begin(childGetter(node))
+			*std::begin(childGetter(std::forward<NodeType>(node)))
 		} -> std::convertible_to<NodeType&>;
 	}
-	ImVec2 Tree(NodeType& aNode, DrawingFunction&& aDrawingFunction, ChildGetter&& aChildGetter, ImColor aColor = ImGui::GetStyle().Colors[ImGuiCol_PlotLines], float aIndentdepth = 15.f, float aRounding = 0, float aThickness = 1)
+	ImVec2 Tree(NodeType&& aNode, DrawingFunction&& aDrawingFunction, ChildGetter&& aChildGetter, ImColor aColor = ImGui::GetStyle().Colors[ImGuiCol_PlotLines], float aIndentdepth = 15.f, float aRounding = 0, float aThickness = 1)
 	{
 		ImVec2 anchor;
 		ImVec2 treeRoot;
@@ -31,7 +31,7 @@ namespace imgui_extensions
 			ImVec2 start = ImGui::GetCursorScreenPos();
 			ImGui::BeginChild("node", { 0, 0 }, ImGuiChildFlags_AutoResizeY);
 
-			aDrawingFunction(aNode);
+			aDrawingFunction(std::forward<NodeType>(aNode));
 
 			ImGui::EndChild();
 			ImVec2 end = ImGui::GetCursorScreenPos();
@@ -49,7 +49,7 @@ namespace imgui_extensions
 
 		ImGui::Indent(aIndentdepth);
 		std::vector<ImVec2> anchors;
-		for (NodeType& child : aChildGetter(aNode))
+		for (NodeType& child : aChildGetter(std::forward<NodeType>(aNode)))
 		{
 			ImGui::PushID(static_cast<int>(anchors.size()));
 
